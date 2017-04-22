@@ -1,0 +1,444 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="DemoModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.7" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="administrador">
+          <Key>
+            <PropertyRef Name="id_administrador" />
+          </Key>
+          <Property Name="id_administrador" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="45" />
+          <Property Name="estado" Type="tinyint" Nullable="false" />
+          <Property Name="tipo" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="correo_electronico" Type="varchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="apuesta">
+          <Key>
+            <PropertyRef Name="id_apuesta" />
+            <PropertyRef Name="terminos" />
+            <PropertyRef Name="fecha_creacion" />
+            <PropertyRef Name="duracion" />
+            <PropertyRef Name="id_administrador" />
+          </Key>
+          <Property Name="id_apuesta" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="terminos" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="fecha_creacion" Type="datetime" Precision="0" Nullable="false" />
+          <Property Name="duracion" Type="datetime" Precision="0" Nullable="false" />
+          <Property Name="estado" Type="tinyint" Nullable="false" />
+          <Property Name="condicion" Type="tinyint" />
+          <Property Name="id_administrador" Type="int" Nullable="false" />
+          <Property Name="veces_a_pagar" Type="double" Nullable="false" />
+        </EntityType>
+        <EntityType Name="cliente">
+          <Key>
+            <PropertyRef Name="id_cliente" />
+          </Key>
+          <Property Name="id_cliente" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="monto_actual" Type="double" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="45" />
+          <Property Name="apellido" Type="varchar" MaxLength="45" />
+          <Property Name="estado" Type="tinyint" Nullable="false" />
+          <Property Name="correo_electronico" Type="varchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="oferta_apuesta">
+          <Key>
+            <PropertyRef Name="id_cliente" />
+            <PropertyRef Name="id_apuesta" />
+            <PropertyRef Name="id_administrador" />
+            <PropertyRef Name="terminos_apuesta" />
+            <PropertyRef Name="fecha_creacion_apuesta" />
+            <PropertyRef Name="duracion_apuesta" />
+          </Key>
+          <Property Name="id_cliente" Type="int" Nullable="false" />
+          <Property Name="id_apuesta" Type="int" Nullable="false" />
+          <Property Name="id_administrador" Type="int" Nullable="false" />
+          <Property Name="terminos_apuesta" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="fecha_creacion_apuesta" Type="datetime" Precision="0" Nullable="false" />
+          <Property Name="duracion_apuesta" Type="datetime" Precision="0" Nullable="false" />
+          <Property Name="monto_apostado" Type="double" Nullable="false" />
+          <Property Name="fecha_oferta" Type="datetime" Precision="0" Nullable="false" />
+          <Property Name="condicion_a_cumplirse" Type="tinyint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="transaccion">
+          <Key>
+            <PropertyRef Name="id_administrador" />
+            <PropertyRef Name="id_cliente" />
+          </Key>
+          <Property Name="id_administrador" Type="int" Nullable="false" />
+          <Property Name="id_cliente" Type="int" Nullable="false" />
+          <Property Name="tipo" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="detalle" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="monto" Type="double" Nullable="false" />
+          <Property Name="fecha_transaccion" Type="datetime" Precision="0" Nullable="false" />
+        </EntityType>
+        <Association Name="fk_Administrador_has_Cliente_Administrador1">
+          <End Role="administrador" Type="Self.administrador" Multiplicity="1" />
+          <End Role="transaccion" Type="Self.transaccion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="administrador">
+              <PropertyRef Name="id_administrador" />
+            </Principal>
+            <Dependent Role="transaccion">
+              <PropertyRef Name="id_administrador" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Administrador_has_Cliente_Cliente1">
+          <End Role="cliente" Type="Self.cliente" Multiplicity="1" />
+          <End Role="transaccion" Type="Self.transaccion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cliente">
+              <PropertyRef Name="id_cliente" />
+            </Principal>
+            <Dependent Role="transaccion">
+              <PropertyRef Name="id_cliente" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Apuesta_Administrador">
+          <End Role="administrador" Type="Self.administrador" Multiplicity="1" />
+          <End Role="apuesta" Type="Self.apuesta" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="administrador">
+              <PropertyRef Name="id_administrador" />
+            </Principal>
+            <Dependent Role="apuesta">
+              <PropertyRef Name="id_administrador" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Cliente_has_Apuesta_Apuesta1">
+          <End Role="apuesta" Type="Self.apuesta" Multiplicity="1" />
+          <End Role="oferta_apuesta" Type="Self.oferta_apuesta" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="apuesta">
+              <PropertyRef Name="id_apuesta" />
+              <PropertyRef Name="id_administrador" />
+              <PropertyRef Name="terminos" />
+              <PropertyRef Name="fecha_creacion" />
+              <PropertyRef Name="duracion" />
+            </Principal>
+            <Dependent Role="oferta_apuesta">
+              <PropertyRef Name="id_apuesta" />
+              <PropertyRef Name="id_administrador" />
+              <PropertyRef Name="terminos_apuesta" />
+              <PropertyRef Name="fecha_creacion_apuesta" />
+              <PropertyRef Name="duracion_apuesta" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Cliente_has_Apuesta_Cliente1">
+          <End Role="cliente" Type="Self.cliente" Multiplicity="1" />
+          <End Role="oferta_apuesta" Type="Self.oferta_apuesta" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cliente">
+              <PropertyRef Name="id_cliente" />
+            </Principal>
+            <Dependent Role="oferta_apuesta">
+              <PropertyRef Name="id_cliente" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DemoModelStoreContainer">
+          <EntitySet Name="administrador" EntityType="Self.administrador" Schema="mydb" store:Type="Tables" />
+          <EntitySet Name="apuesta" EntityType="Self.apuesta" Schema="mydb" store:Type="Tables" />
+          <EntitySet Name="cliente" EntityType="Self.cliente" Schema="mydb" store:Type="Tables" />
+          <EntitySet Name="oferta_apuesta" EntityType="Self.oferta_apuesta" Schema="mydb" store:Type="Tables" />
+          <EntitySet Name="transaccion" EntityType="Self.transaccion" Schema="mydb" store:Type="Tables" />
+          <AssociationSet Name="fk_Administrador_has_Cliente_Administrador1" Association="Self.fk_Administrador_has_Cliente_Administrador1">
+            <End Role="administrador" EntitySet="administrador" />
+            <End Role="transaccion" EntitySet="transaccion" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Administrador_has_Cliente_Cliente1" Association="Self.fk_Administrador_has_Cliente_Cliente1">
+            <End Role="cliente" EntitySet="cliente" />
+            <End Role="transaccion" EntitySet="transaccion" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Apuesta_Administrador" Association="Self.fk_Apuesta_Administrador">
+            <End Role="administrador" EntitySet="administrador" />
+            <End Role="apuesta" EntitySet="apuesta" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Cliente_has_Apuesta_Apuesta1" Association="Self.fk_Cliente_has_Apuesta_Apuesta1">
+            <End Role="apuesta" EntitySet="apuesta" />
+            <End Role="oferta_apuesta" EntitySet="oferta_apuesta" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Cliente_has_Apuesta_Cliente1" Association="Self.fk_Cliente_has_Apuesta_Cliente1">
+            <End Role="cliente" EntitySet="cliente" />
+            <End Role="oferta_apuesta" EntitySet="oferta_apuesta" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DemoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="administrador">
+          <Key>
+            <PropertyRef Name="id_administrador" />
+          </Key>
+          <Property Name="id_administrador" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="nombre" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="estado" Type="SByte" Nullable="false" />
+          <Property Name="tipo" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="correo_electronico" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="transaccions" Relationship="Self.fk_Administrador_has_Cliente_Administrador1" FromRole="administrador" ToRole="transaccion" />
+          <NavigationProperty Name="apuestas" Relationship="Self.fk_Apuesta_Administrador" FromRole="administrador" ToRole="apuesta" />
+        </EntityType>
+        <EntityType Name="apuesta">
+          <Key>
+            <PropertyRef Name="id_apuesta" />
+            <PropertyRef Name="terminos" />
+            <PropertyRef Name="fecha_creacion" />
+            <PropertyRef Name="duracion" />
+            <PropertyRef Name="id_administrador" />
+          </Key>
+          <Property Name="id_apuesta" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="terminos" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="fecha_creacion" Type="DateTime" Nullable="false" />
+          <Property Name="duracion" Type="DateTime" Nullable="false" />
+          <Property Name="estado" Type="SByte" Nullable="false" />
+          <Property Name="condicion" Type="SByte" />
+          <Property Name="id_administrador" Type="Int32" Nullable="false" />
+          <Property Name="veces_a_pagar" Type="Double" Nullable="false" />
+          <NavigationProperty Name="administrador" Relationship="Self.fk_Apuesta_Administrador" FromRole="apuesta" ToRole="administrador" />
+          <NavigationProperty Name="oferta_apuesta" Relationship="Self.fk_Cliente_has_Apuesta_Apuesta1" FromRole="apuesta" ToRole="oferta_apuesta" />
+        </EntityType>
+        <EntityType Name="cliente">
+          <Key>
+            <PropertyRef Name="id_cliente" />
+          </Key>
+          <Property Name="id_cliente" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="monto_actual" Type="Double" Nullable="false" />
+          <Property Name="nombre" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="apellido" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="estado" Type="SByte" Nullable="false" />
+          <Property Name="correo_electronico" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="transaccions" Relationship="Self.fk_Administrador_has_Cliente_Cliente1" FromRole="cliente" ToRole="transaccion" />
+          <NavigationProperty Name="oferta_apuesta" Relationship="Self.fk_Cliente_has_Apuesta_Cliente1" FromRole="cliente" ToRole="oferta_apuesta" />
+        </EntityType>
+        <EntityType Name="oferta_apuesta">
+          <Key>
+            <PropertyRef Name="id_cliente" />
+            <PropertyRef Name="id_apuesta" />
+            <PropertyRef Name="id_administrador" />
+            <PropertyRef Name="terminos_apuesta" />
+            <PropertyRef Name="fecha_creacion_apuesta" />
+            <PropertyRef Name="duracion_apuesta" />
+          </Key>
+          <Property Name="id_cliente" Type="Int32" Nullable="false" />
+          <Property Name="id_apuesta" Type="Int32" Nullable="false" />
+          <Property Name="id_administrador" Type="Int32" Nullable="false" />
+          <Property Name="terminos_apuesta" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="fecha_creacion_apuesta" Type="DateTime" Nullable="false" />
+          <Property Name="duracion_apuesta" Type="DateTime" Nullable="false" />
+          <Property Name="monto_apostado" Type="Double" Nullable="false" />
+          <Property Name="fecha_oferta" Type="DateTime" Nullable="false" />
+          <Property Name="condicion_a_cumplirse" Type="SByte" Nullable="false" />
+          <NavigationProperty Name="apuesta" Relationship="Self.fk_Cliente_has_Apuesta_Apuesta1" FromRole="oferta_apuesta" ToRole="apuesta" />
+          <NavigationProperty Name="cliente" Relationship="Self.fk_Cliente_has_Apuesta_Cliente1" FromRole="oferta_apuesta" ToRole="cliente" />
+        </EntityType>
+        <EntityType Name="transaccion">
+          <Key>
+            <PropertyRef Name="id_administrador" />
+            <PropertyRef Name="id_cliente" />
+          </Key>
+          <Property Name="id_administrador" Type="Int32" Nullable="false" />
+          <Property Name="id_cliente" Type="Int32" Nullable="false" />
+          <Property Name="tipo" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="detalle" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="monto" Type="Double" Nullable="false" />
+          <Property Name="fecha_transaccion" Type="DateTime" Nullable="false" />
+          <NavigationProperty Name="administrador" Relationship="Self.fk_Administrador_has_Cliente_Administrador1" FromRole="transaccion" ToRole="administrador" />
+          <NavigationProperty Name="cliente" Relationship="Self.fk_Administrador_has_Cliente_Cliente1" FromRole="transaccion" ToRole="cliente" />
+        </EntityType>
+        <Association Name="fk_Administrador_has_Cliente_Administrador1">
+          <End Role="administrador" Type="Self.administrador" Multiplicity="1" />
+          <End Role="transaccion" Type="Self.transaccion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="administrador">
+              <PropertyRef Name="id_administrador" />
+            </Principal>
+            <Dependent Role="transaccion">
+              <PropertyRef Name="id_administrador" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Apuesta_Administrador">
+          <End Role="administrador" Type="Self.administrador" Multiplicity="1" />
+          <End Role="apuesta" Type="Self.apuesta" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="administrador">
+              <PropertyRef Name="id_administrador" />
+            </Principal>
+            <Dependent Role="apuesta">
+              <PropertyRef Name="id_administrador" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Cliente_has_Apuesta_Apuesta1">
+          <End Role="apuesta" Type="Self.apuesta" Multiplicity="1" />
+          <End Role="oferta_apuesta" Type="Self.oferta_apuesta" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="apuesta">
+              <PropertyRef Name="id_apuesta" />
+              <PropertyRef Name="id_administrador" />
+              <PropertyRef Name="terminos" />
+              <PropertyRef Name="fecha_creacion" />
+              <PropertyRef Name="duracion" />
+            </Principal>
+            <Dependent Role="oferta_apuesta">
+              <PropertyRef Name="id_apuesta" />
+              <PropertyRef Name="id_administrador" />
+              <PropertyRef Name="terminos_apuesta" />
+              <PropertyRef Name="fecha_creacion_apuesta" />
+              <PropertyRef Name="duracion_apuesta" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Administrador_has_Cliente_Cliente1">
+          <End Role="cliente" Type="Self.cliente" Multiplicity="1" />
+          <End Role="transaccion" Type="Self.transaccion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cliente">
+              <PropertyRef Name="id_cliente" />
+            </Principal>
+            <Dependent Role="transaccion">
+              <PropertyRef Name="id_cliente" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Cliente_has_Apuesta_Cliente1">
+          <End Role="cliente" Type="Self.cliente" Multiplicity="1" />
+          <End Role="oferta_apuesta" Type="Self.oferta_apuesta" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cliente">
+              <PropertyRef Name="id_cliente" />
+            </Principal>
+            <Dependent Role="oferta_apuesta">
+              <PropertyRef Name="id_cliente" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DemoEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="administradors" EntityType="Self.administrador" />
+          <EntitySet Name="apuestas" EntityType="Self.apuesta" />
+          <EntitySet Name="clientes" EntityType="Self.cliente" />
+          <EntitySet Name="oferta_apuesta" EntityType="Self.oferta_apuesta" />
+          <EntitySet Name="transaccions" EntityType="Self.transaccion" />
+          <AssociationSet Name="fk_Administrador_has_Cliente_Administrador1" Association="Self.fk_Administrador_has_Cliente_Administrador1">
+            <End Role="administrador" EntitySet="administradors" />
+            <End Role="transaccion" EntitySet="transaccions" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Apuesta_Administrador" Association="Self.fk_Apuesta_Administrador">
+            <End Role="administrador" EntitySet="administradors" />
+            <End Role="apuesta" EntitySet="apuestas" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Cliente_has_Apuesta_Apuesta1" Association="Self.fk_Cliente_has_Apuesta_Apuesta1">
+            <End Role="apuesta" EntitySet="apuestas" />
+            <End Role="oferta_apuesta" EntitySet="oferta_apuesta" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Administrador_has_Cliente_Cliente1" Association="Self.fk_Administrador_has_Cliente_Cliente1">
+            <End Role="cliente" EntitySet="clientes" />
+            <End Role="transaccion" EntitySet="transaccions" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Cliente_has_Apuesta_Cliente1" Association="Self.fk_Cliente_has_Apuesta_Cliente1">
+            <End Role="cliente" EntitySet="clientes" />
+            <End Role="oferta_apuesta" EntitySet="oferta_apuesta" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DemoModelStoreContainer" CdmEntityContainer="DemoEntities">
+          <EntitySetMapping Name="administradors">
+            <EntityTypeMapping TypeName="DemoModel.administrador">
+              <MappingFragment StoreEntitySet="administrador">
+                <ScalarProperty Name="id_administrador" ColumnName="id_administrador" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="estado" ColumnName="estado" />
+                <ScalarProperty Name="tipo" ColumnName="tipo" />
+                <ScalarProperty Name="correo_electronico" ColumnName="correo_electronico" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="apuestas">
+            <EntityTypeMapping TypeName="DemoModel.apuesta">
+              <MappingFragment StoreEntitySet="apuesta">
+                <ScalarProperty Name="id_apuesta" ColumnName="id_apuesta" />
+                <ScalarProperty Name="terminos" ColumnName="terminos" />
+                <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+                <ScalarProperty Name="duracion" ColumnName="duracion" />
+                <ScalarProperty Name="estado" ColumnName="estado" />
+                <ScalarProperty Name="condicion" ColumnName="condicion" />
+                <ScalarProperty Name="id_administrador" ColumnName="id_administrador" />
+                <ScalarProperty Name="veces_a_pagar" ColumnName="veces_a_pagar" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="clientes">
+            <EntityTypeMapping TypeName="DemoModel.cliente">
+              <MappingFragment StoreEntitySet="cliente">
+                <ScalarProperty Name="id_cliente" ColumnName="id_cliente" />
+                <ScalarProperty Name="monto_actual" ColumnName="monto_actual" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="apellido" ColumnName="apellido" />
+                <ScalarProperty Name="estado" ColumnName="estado" />
+                <ScalarProperty Name="correo_electronico" ColumnName="correo_electronico" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="oferta_apuesta">
+            <EntityTypeMapping TypeName="DemoModel.oferta_apuesta">
+              <MappingFragment StoreEntitySet="oferta_apuesta">
+                <ScalarProperty Name="id_cliente" ColumnName="id_cliente" />
+                <ScalarProperty Name="id_apuesta" ColumnName="id_apuesta" />
+                <ScalarProperty Name="id_administrador" ColumnName="id_administrador" />
+                <ScalarProperty Name="terminos_apuesta" ColumnName="terminos_apuesta" />
+                <ScalarProperty Name="fecha_creacion_apuesta" ColumnName="fecha_creacion_apuesta" />
+                <ScalarProperty Name="duracion_apuesta" ColumnName="duracion_apuesta" />
+                <ScalarProperty Name="monto_apostado" ColumnName="monto_apostado" />
+                <ScalarProperty Name="fecha_oferta" ColumnName="fecha_oferta" />
+                <ScalarProperty Name="condicion_a_cumplirse" ColumnName="condicion_a_cumplirse" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="transaccions">
+            <EntityTypeMapping TypeName="DemoModel.transaccion">
+              <MappingFragment StoreEntitySet="transaccion">
+                <ScalarProperty Name="id_administrador" ColumnName="id_administrador" />
+                <ScalarProperty Name="id_cliente" ColumnName="id_cliente" />
+                <ScalarProperty Name="tipo" ColumnName="tipo" />
+                <ScalarProperty Name="detalle" ColumnName="detalle" />
+                <ScalarProperty Name="monto" ColumnName="monto" />
+                <ScalarProperty Name="fecha_transaccion" ColumnName="fecha_transaccion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
